@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <title>个人工具箱</title>
     <style>
         body {
@@ -68,6 +71,11 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            transition: opacity 0.3s ease;
+            opacity: 1;
+        }
+        .calculator[style*="display: none"] {
+            opacity: 0;
         }
         .input-group {
             margin-bottom: 20px;
@@ -664,6 +672,41 @@
             
             .copy-row-btn {
                 background: #2196F3;
+            }
+            
+            /* 文件上传按钮样式优化 */
+            input[type="file"] {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 10px;
+                background: #f8f9fa;
+                border-radius: 8px;
+                border: 1px solid #e9ecef;
+            }
+            
+            /* 处理结果区域样式优化 */
+            .data-process-container {
+                padding: 15px;
+                border-radius: 12px;
+                background: white;
+            }
+            
+            /* 表格滚动优化 */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* 按钮组样式优化 */
+            .button-group {
+                display: flex;
+                gap: 10px;
+                margin: 15px 0;
+            }
+            
+            .button-group button {
+                flex: 1;
+                white-space: nowrap;
             }
         }
         
