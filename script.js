@@ -785,4 +785,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始化数据处理模块
     initializeDataProcessor();
-}); 
+});
+
+function showCalculator(calculatorId) {
+    // 隐藏所有计算器
+    document.querySelectorAll('.calculator').forEach(calc => {
+        calc.style.display = 'none';
+    });
+    
+    // 显示选中的计算器
+    document.getElementById(calculatorId).style.display = 'block';
+    
+    // 更新菜单项状态
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    event.target.classList.add('active');
+} 
