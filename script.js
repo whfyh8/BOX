@@ -769,6 +769,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 generateExpiryDates(); // 生成到期日期数据
             } else if (index === 3) {
                 switchModule('dataProcessCalculator');
+            } else if (index === 4) {
+                switchModule('deviceNameGenerator');
             }
         };
     });
@@ -801,4 +803,104 @@ function showCalculator(calculatorId) {
         item.classList.remove('active');
     });
     event.target.classList.add('active');
+}
+
+/**
+ * 生成设备名称
+ */
+function generateDeviceNames() {
+    const count = parseInt(document.getElementById('nameCount').value) || 1;
+    const prefix = document.getElementById('prefix').value;
+    let startNum = parseInt(document.getElementById('startNumber').value) || 1;
+    const suffix = document.getElementById('suffix').value;
+    
+    // 验证序号格式
+    if (!/^\d+$/.test(document.getElementById('startNumber').value)) {
+        alert('序号必须为数字！');
+        return;
+    }
+    
+    let names = [];
+    // 计算结束序号
+    const endNum = startNum + count - 1;
+    
+    // 生成名称总结
+    const summary = `${prefix}${startNum.toString().padStart(2, '0')}-${endNum.toString().padStart(2, '0')}${suffix}`;
+    
+    // 生成具体名称列表
+    for (let i = 0; i < count; i++) {
+        const number = (startNum + i).toString().padStart(2, '0');
+        names.push(`${prefix}${number}${suffix}`);
+    }
+    
+    // 显示结果
+    const resultDiv = document.getElementById('generatedNames');
+    resultDiv.innerHTML = `
+        <div class="name-summary">
+            <div style="display: flex; align-items: center; width: 100%;">
+                <button onclick="copySummary(this)" class="copy-btn">复制</button>
+                <span style="flex: 1;">${summary}</span>
+            </div>
+        </div>
+        <div class="name-list">
+            <div style="display: flex; align-items: flex-start;">
+                <button onclick="copyGeneratedNames(this)" class="copy-btn">复制</button>
+                <span style="flex: 1;">${names.join('\n')}</span>
+            </div>
+        </div>`;
+}
+
+/**
+ * 复制名称总结
+ */
+function copySummary(button) {
+    const summaryText = button.parentElement.textContent.replace('复制', '').trim();
+    
+    // 创建临时文本区域
+    const textarea = document.createElement('textarea');
+    textarea.value = summaryText;
+    document.body.appendChild(textarea);
+    
+    // 选择并复制文本
+    textarea.select();
+    document.execCommand('copy');
+    
+    // 移除临时文本区域
+    document.body.removeChild(textarea);
+    
+    // 显示复制成功提示
+    button.textContent = '已复制';
+    setTimeout(() => {
+        button.textContent = '复制';
+    }, 1000);
+}
+
+/**
+ * 复制生成的名称
+ */
+function copyGeneratedNames(button) {
+    // 修改获取文本内容的方式
+    const namesText = button.parentElement.querySelector('span').textContent.trim();
+    if (!namesText) {
+        alert('没有可复制的内容！');
+        return;
+    }
+    
+    // 创建临时文本区域
+    const textarea = document.createElement('textarea');
+    textarea.value = namesText;
+    document.body.appendChild(textarea);
+    
+    // 选择并复制文本
+    textarea.select();
+    document.execCommand('copy');
+    
+    // 移除临时文本区域
+    document.body.removeChild(textarea);
+    
+    // 显示复制成功提示
+    button.textContent = '已复制';
+    setTimeout(() => {
+        button.textContent = '复制';
+    }, 1000);
 } 
