@@ -771,6 +771,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 switchModule('dataProcessCalculator');
             } else if (index === 4) {
                 switchModule('deviceNameGenerator');
+            } else if (index === 5) {
+                switchModule('deviceNameParser');
             }
         };
     });
@@ -881,6 +883,95 @@ function copySummary(button) {
 function copyGeneratedNames(button) {
     // 修改获取文本内容的方式
     const namesText = button.parentElement.querySelector('span').textContent.trim();
+    if (!namesText) {
+        alert('没有可复制的内容！');
+        return;
+    }
+    
+    // 创建临时文本区域
+    const textarea = document.createElement('textarea');
+    textarea.value = namesText;
+    document.body.appendChild(textarea);
+    
+    // 选择并复制文本
+    textarea.select();
+    document.execCommand('copy');
+    
+    // 移除临时文本区域
+    document.body.removeChild(textarea);
+    
+    // 显示复制成功提示
+    button.textContent = '已复制';
+    setTimeout(() => {
+        button.textContent = '复制';
+    }, 1000);
+}
+
+/**
+ * 解析设备名称
+ */
+function parseDeviceNames() {
+    const input = document.getElementById('nameInput').value.trim();
+    if (!input) {
+        alert('请输入设备名称！');
+        return;
+    }
+    
+    const lines = input.split('\n').filter(line => line.trim());
+    let results = [];
+    let expandedCount = 0;  // 用于统计展开后的数量
+    
+    lines.forEach(line => {
+        line = line.trim();
+        if (!line) return;
+        
+        // 匹配类似 "7425V01-20" 的格式
+        const match = line.match(/^(.+?)(\d+)-(\d+)$/);
+        
+        if (match) {
+            const prefix = match[1];  // 前缀部分
+            const start = parseInt(match[2]);
+            const end = parseInt(match[3]);
+            const numLength = match[2].length;  // 获取原始数字的长度，用于保持前导零
+            
+            if (start <= end) {
+                // 生成序列，使用 padStart 保持前导零
+                for (let i = start; i <= end; i++) {
+                    results.push(`${prefix}${i.toString().padStart(numLength, '0')}`);
+                }
+                expandedCount += end - start + 1;  // 计算展开后的数量
+            } else {
+                // 如果格式不正确，保持原样输出
+                results.push(line);
+                expandedCount += 1;
+            }
+        } else {
+            // 不符合格式的直接添加
+            results.push(line);
+            expandedCount += 1;
+        }
+    });
+    
+    // 更新解析状态
+    document.getElementById('parseStatus').textContent = 
+        `已解析 ${lines.length} 条数据，生成结果 ${expandedCount} 条`;
+    
+    // 显示结果
+    const resultDiv = document.getElementById('parsedNames');
+    resultDiv.innerHTML = `
+        <div class="parsed-result">
+            <div style="display: flex; align-items: flex-start;">
+                <button onclick="copyParsedNames(this)" class="copy-btn">复制</button>
+                <div class="parsed-content">${results.join('\n')}</div>
+            </div>
+        </div>`;
+}
+
+/**
+ * 复制解析后的名称
+ */
+function copyParsedNames(button) {
+    const namesText = button.nextElementSibling.textContent.trim();
     if (!namesText) {
         alert('没有可复制的内容！');
         return;

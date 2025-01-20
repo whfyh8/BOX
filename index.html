@@ -515,6 +515,75 @@
             }
         }
         
+        /* 修改移动端菜单样式 */
+        @media screen and (max-width: 768px) {
+            .menu-list {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);  /* 每行显示3个菜单项 */
+                gap: 8px;
+                padding: 10px;
+                overflow-x: visible;
+                white-space: normal;
+            }
+            
+            .menu-item {
+                width: 100%;
+                padding: 10px 5px;
+                text-align: center;
+                background: #f8f9fa;
+                border-radius: 8px;
+                font-size: 13px;
+                border: 1px solid #e9ecef;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 40px;
+                margin: 0;
+                transition: all 0.3s ease;
+            }
+            
+            .menu-item.active {
+                background: #4CAF50;
+                color: white;
+                border-color: #4CAF50;
+                box-shadow: 0 2px 6px rgba(76,175,80,0.2);
+            }
+            
+            /* 优化点击区域 */
+            .menu-item:active {
+                transform: scale(0.98);
+                background: #45a049;
+                color: white;
+            }
+            
+            /* 移除滚动条 */
+            .menu-list::-webkit-scrollbar {
+                display: none;
+            }
+            
+            /* 优化菜单容器 */
+            .sidebar {
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                background: white;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                padding: 0;
+            }
+        }
+        
+        /* 处理超小屏幕 */
+        @media screen and (max-width: 360px) {
+            .menu-list {
+                grid-template-columns: repeat(2, 1fr);  /* 更小的屏幕每行显示2个 */
+            }
+            
+            .menu-item {
+                font-size: 12px;
+                padding: 8px 4px;
+            }
+        }
+        
         /* 移动端适配样式 */
         @media screen and (max-width: 768px) {
             body {
@@ -1071,6 +1140,84 @@
                 padding: 15px;
             }
         }
+        
+        /* 名称解析器样式 */
+        #nameInput {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: monospace;
+            resize: vertical;
+        }
+        
+        #nameInput:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76,175,80,0.1);
+        }
+        
+        .parsed-names {
+            margin-top: 20px;
+        }
+        
+        .parsed-result {
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .parsed-result .copy-btn {
+            float: left;
+            padding: 4px 8px;
+            height: auto;
+            font-size: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            min-width: 50px;
+        }
+        
+        .parsed-content {
+            padding: 15px;
+            white-space: pre-line;
+            line-height: 1.5;
+        }
+        
+        /* 移动端适配 */
+        @media screen and (max-width: 768px) {
+            #nameInput {
+                font-size: 16px;
+                padding: 10px;
+            }
+            
+            .parsed-result .copy-btn {
+                padding: 6px 12px;
+                font-size: 14px;
+                min-width: 60px;
+            }
+        }
+        
+        .parse-action {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .parse-status {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .parse-status {
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1083,6 +1230,7 @@
             <li class="menu-item" onclick="showCalculator('expiryDatesCalculator')">常用到期日期</li>
             <li class="menu-item" onclick="showCalculator('dataProcessCalculator')">数据处理</li>
             <li class="menu-item" onclick="showCalculator('deviceNameGenerator')">设备名称生成</li>
+            <li class="menu-item" onclick="showCalculator('deviceNameParser')">设备名称解析</li>
         </ul>
     </div>
     
@@ -1192,6 +1340,21 @@
             <button onclick="generateDeviceNames()">生成名称</button>
             <div class="result-container">
                 <div id="generatedNames" class="generated-names"></div>
+            </div>
+        </div>
+
+        <!-- 修改设备名称解析模块 -->
+        <div class="calculator" id="deviceNameParser" style="display: none;">
+            <h2>设备名称解析</h2>
+            <div class="input-group">
+                <textarea id="nameInput" class="name-input" placeholder="请输入设备名称，每行一个&#10;支持格式如：1234V1-3" rows="5"></textarea>
+            </div>
+            <div class="parse-action">
+                <button onclick="parseDeviceNames()">解析名称</button>
+                <span id="parseStatus" class="parse-status"></span>
+            </div>
+            <div class="result-container">
+                <div id="parsedNames" class="parsed-names"></div>
             </div>
         </div>
     </div>
